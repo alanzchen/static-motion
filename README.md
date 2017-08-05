@@ -23,9 +23,9 @@ All you need is a Github account.
    - `ACCESS_TOKEN`: fill your Netlify access token.
       (Remember to secure it!)
    - `SITE_ID`: The "API ID" of your Netlify site.
-   - `index`: The URL of your  index page on [Notion.so](notion.so).
+   - `index`: The URL of your index page on [Notion.so](notion.so).
    - `title_sep`: Your title separator. No space around!
-   - `description`: Your site description.
+   - `description`: Your site description. "Remember to quote your string!"
    - `base_url`: Your site URL.
    - `twitter`: Your twitter ID.
       Declare an empty string if you do not want it.
