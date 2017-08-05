@@ -1,8 +1,12 @@
-# Static Motion
+# 🚀 Static Motion
 
 Make your static site from [Notion.so](notion.so) with the help of Netlify and Travis CI.
 
 [![Build Status](https://travis-ci.org/alanzchen/static-motion.svg?branch=master)](https://travis-ci.org/alanzchen/static-motion)
+
+**Demo:**
+
+- [Project Homepage](staticmotion.zenan.ch)
 
 ## Installation
 
@@ -13,13 +17,19 @@ All you need is a Github account.
 ## Get Started
 
 1. Fork this project.
-2. Modify `conf.py` as needed.
-3. Turn on Travis CI for your forked repository.
-4. Get your access token at Netlify and set the following environment variable on Travis CI's setting page:
+2. Turn on Travis CI for your forked repository.
+3. Get your access token at Netlify and set the following environment variables on Travis CI's setting page:
+   See `conf.py` for example.
    - `ACCESS_TOKEN`: fill your Netlify access token.
-     (Remember to secure it!)
+      (Remember to secure it!)
    - `SITE_ID`: The "API ID" of your Netlify site.
-5. Bang!
+   - `index`: The URL of your  index page on [Notion.so](notion.so).
+   - `title_sep`: Your title separator. No space around!
+   - `description`: Your site description.
+   - `base_url`: Your site URL.
+   - `twitter`: Your twitter ID.
+      Declare an empty string if you do not want it.
+4. Bang! Wait a few minutes and your site will be up!
 
 ## Debugging
 

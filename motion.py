@@ -8,7 +8,7 @@ import requests
 import time
 
 from const import assets
-from conf import options
+from os import environ as options
 
 driver = webdriver.Chrome()
 chrome_options = Options()
@@ -118,18 +118,29 @@ class Notion:
             self.title = title
             self.options["site_title"] = title
         else:
-            self.title = title + \
-                self.options["title_sep"] + self.options["site_title"]
+            self.title = title + ' ' + \
+                self.options["title_sep"] + ' ' + self.options["site_title"]
         self.dom.find("title").string = self.title
         self.dom.find("meta", attrs={"name": "twitter:site"})["content"] = self.options["twitter"]
-        self.dom.find("meta", attrs={"name": "twitter:url"})["content"] = self.options["base_url"] + self.url.split("/")[-1]
-        self.dom.find("meta", attrs={"property": "og:url"})["content"] = self.options["base_url"] + self.url.split("/")[-1]
+        page_path = '-'.join(self.url.split("/")[-1].split('-')[:-1])
+        self.dom.find("meta", attrs={"name": "twitter:url"})["content"] = self.options["base_url"] + page_path
+        self.dom.find("meta", attrs={"property": "og:url"})["content"] = self.options["base_url"] + page_path
         self.dom.find("meta", attrs={"property": "og:title"})["content"] = self.title
+        self.dom.find("meta", attrs={"name": "twitter:title"})["content"] = self.title
         self.dom.find("meta", attrs={"property": "og:site_name"})["content"] = self.options["site_title"]
         self.dom.find("meta", attrs={"name": "description"})["content"] = self.options["description"]
         self.dom.find("meta", attrs={"name": "twitter:description"})["content"] = self.options["description"]
         self.dom.find("meta", attrs={"property": "og:description"})["content"] = self.options["description"]
         print("Title: " + self.dom.find("title").string)
+        imgs = [i for i in self.dom.find_all('img') if i.has_attr("style") and "30vh" in i["style"]]
+        if imgs:
+            img_url = self.options["base_url"] + imgs[0]["src"][1:]
+            self.dom.find("meta", attrs={"property": "og:image"})["content"] = img_url
+            self.dom.find("meta", attrs={"name": "twitter:image"})["content"] = img_url
+        else:
+            self.dom.find("meta", attrs={"property": "og:image"}).decompose()
+            self.dom.find("meta", attrs={"name": "twitter:image"}).decompose()
+
 
     def remove_scripts(self):
         for s in self.dom.find_all("script"):
@@ -139,6 +150,8 @@ class Notion:
                     pass
                 else:
                     continue
+            s.decompose()
+        for s in self.dom.find_all("noscript"):
             s.decompose()
 
     def save_assets(self):
