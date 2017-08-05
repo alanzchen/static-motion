@@ -1,12 +1,14 @@
 # Static Motion
 
-Make your static site from [Notion.so](notion.so).
+Make your static site from [Notion.so](notion.so) with the help of Netlify and Travis CI.
 
 [![Build Status](https://travis-ci.org/alanzchen/static-motion.svg?branch=master)](https://travis-ci.org/alanzchen/static-motion)
 
 ## Installation
 
 How do I install this… **No! You do not need to install it on your machine.**
+
+All you need is a Github account.
 
 ## Get Started
 
