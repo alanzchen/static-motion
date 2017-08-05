@@ -1,0 +1,11 @@
+assets = ["index.appcache",
+          "/all.css",
+          "/css-print/print.css",
+          "/fonts/lyon-text-regular-italic.woff",
+          "/fonts/lyon-text-regular.woff",
+          "/fonts/lyon-text-semibold-italic.woff",
+          "/fonts/lyon-text-semibold.woff",
+          "/fonts/nitti-medium-italic.woff",
+          "/fonts/nitti-medium.woff",
+          "/fonts/nitti-normal-italic.woff",
+          "/fonts/nitti-normal.woff"]
