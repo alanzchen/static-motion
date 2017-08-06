@@ -78,6 +78,7 @@ class Notion:
         self.driver.get(url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
+        self.wait_spinner()
         self.links = set()
         if not options:
             options = {}
@@ -88,6 +89,11 @@ class Notion:
         else:
             self.filename = '-'.join(url.split("/")
                                      [-1].split('-')[:-1]) + ".html"
+
+    def wait_spinner(self):
+        while (self.dom.find(_class="loading-spinner")):
+            time.sleep(1)
+            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
 
     def init_site(self):
         for f in assets:
