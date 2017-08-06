@@ -22,6 +22,5 @@ script:
 after_success:
   - netlify deploy -p site -s $SITE_ID -t $ACCESS_TOKEN
 cache:
-  - pip
   directories:
   - site
