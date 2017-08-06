@@ -128,7 +128,7 @@ class Notion:
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
 
-    def disqus():
+    def disqus(self):
         divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         if divs:
             last_div = divs[-1]
