@@ -91,7 +91,10 @@ class Notion:
                                      [-1].split('-')[:-1]) + ".html"
 
     def wait_spinner(self):
-        while (self.dom.find(_class="loading-spinner")):
+        i = 0
+        while (self.dom.find(class_="loading-spinner")):
+            i += 1
+            print("Waiting for spinner... " + str(i))
             time.sleep(1)
             self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
 
