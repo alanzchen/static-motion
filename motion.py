@@ -22,13 +22,14 @@ def motion(is_mobile=False):
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    if is_mobile:
-        chrome_options.add_argument('--user-agent=' + user_agent)
-    driver = webdriver.Chrome(chrome_options=chrome_options)
     visited = set()
     notions = {}
     print("Parsing index...")
-    n = Notion(options['index'], driver, options=options, is_index=True)
+    if is_mobile:
+        print("Building mobile version...")
+        chrome_options.add_argument('--user-agent=' + user_agent)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+    n = Notion(options['index'], driver, options=options, is_index=True, is_mobile=is_mobile)
     n.mod()
     print("Index page looks good.")
     n.walk()
