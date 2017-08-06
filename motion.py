@@ -106,7 +106,7 @@ class Notion:
         try:
             self.meta()
             # self.remove_overlay()
-            self.clena()
+            self.clean()
             self.parse_links()
             self.remove_scripts()
             self.save_assets()
