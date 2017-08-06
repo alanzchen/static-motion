@@ -7,5 +7,6 @@ options = {
     "title_sep": "-",
     "description": "Make your static site from Notion.so.",
     "twitter": "@chzenan",
-    "base_url": "https://staticmotion.zenan.ch/"
+    "base_url": "https://staticmotion.zenan.ch/",
+    "build_mobile": "true"
 }

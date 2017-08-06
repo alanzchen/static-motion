@@ -114,6 +114,7 @@ class Notion:
             local_filename = "site/m/" + self.filename
         else:
             local_filename = "site/" + self.filename
+        md(local_filename)
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
 
@@ -221,4 +222,5 @@ class Notion:
 
 if __name__ == "__main__":
     motion()
-    motion(is_mobile=True)
+    if "build_mobile" in options:
+        motion(is_mobile=True)
