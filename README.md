@@ -7,7 +7,7 @@ Make your static site from [Notion.so](https://notion.so) with the help of Netli
 **Demo:**
 
 - [Project Homepage](staticmotion.zenan.ch)
-- [Disqus Integration](https://static-motion.zenan.ch/disqus-integration-demo)
+- [Disqus Integration](https://staticmotion.zenan.ch/disqus-integration-demo)
 
 ## Installation
 
@@ -32,7 +32,7 @@ All you need is a Github account.
       Declare an empty string if you do not want it.
    - `build_mobile`: Will build a mobile version of your entire site at /m/ if this option present.
 4. Bang! Wait a few minutes and your site will be up!
-5. Want to have Google Analytics and Disqus? See [customization](https://static-motion.zenan.ch/customization).
+5. Want to have Google Analytics and Disqus? See [customization](https://staticmotion.zenan.ch/customization).
 
 ## Debugging
 
