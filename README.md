@@ -7,6 +7,7 @@ Make your static site from [Notion.so](notion.so) with the help of Netlify and T
 **Demo:**
 
 - [Project Homepage](staticmotion.zenan.ch)
+- [Disqus Integration](https://static-motion.zenan.ch/disqus-integration-demo)
 
 ## Installation
 
@@ -30,6 +31,7 @@ All you need is a Github account.
    - `twitter`: Your twitter ID.
       Declare an empty string if you do not want it.
 4. Bang! Wait a few minutes and your site will be up!
+5. Want to have Google Analytics and Disqus? See [customization](https://static-motion.zenan.ch/customization).
 
 ## Debugging
 
