@@ -127,6 +127,12 @@ class Notion:
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
 
+    def disqus():
+        last_div = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")][-1]
+        if last_div.text.strip() == "[comment]":
+            last_div.string = ""
+            last_div["id"] = "disqus_thread"
+
     def parse_links(self):
         for a in self.dom.find_all("a"):
             href = a['href']
