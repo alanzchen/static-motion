@@ -109,6 +109,7 @@ class Notion:
             self.parse_links()
             self.remove_scripts()
             self.save_assets()
+            self.disqus()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -128,10 +129,12 @@ class Notion:
             f.write(str(self.dom))
 
     def disqus():
-        last_div = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")][-1]
-        if last_div.text.strip() == "[comment]":
-            last_div.string = ""
-            last_div["id"] = "disqus_thread"
+        divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
+        if divs:
+            last_div = divs[-1]
+            if last_div.text.strip() == "[comment]":
+                last_div.string = ""
+                last_div["id"] = "disqus_thread"
 
     def parse_links(self):
         for a in self.dom.find_all("a"):
