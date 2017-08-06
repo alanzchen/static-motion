@@ -174,7 +174,11 @@ class Notion:
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
         if imgs:
-            img_url = self.options["base_url"] + imgs[0]["src"][1:]
+            img_src = imgs[0]["src"]
+            if img_src.startswith('/'):
+                img_url = self.options["base_url"] + img_src[1:]
+            else:
+                img_url = img_src
             self.dom.find("meta", attrs={"property": "og:image"})[
                 "content"] = img_url
             self.dom.find("meta", attrs={"name": "twitter:image"})[
