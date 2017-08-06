@@ -96,7 +96,7 @@ class Notion:
     def mod(self, no_retry=False):
         try:
             self.meta()
-            self.remove_overlay()
+            # self.remove_overlay()
             self.parse_links()
             self.remove_scripts()
             self.save_assets()
