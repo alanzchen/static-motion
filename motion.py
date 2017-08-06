@@ -78,6 +78,7 @@ class Notion:
         self.driver.get(url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
+        self.wait_spinner()
         self.links = set()
         if not options:
             options = {}
@@ -88,6 +89,14 @@ class Notion:
         else:
             self.filename = '-'.join(url.split("/")
                                      [-1].split('-')[:-1]) + ".html"
+
+    def wait_spinner(self):
+        i = 0
+        while (self.dom.find(class_="loading-spinner")):
+            i += 1
+            print("Waiting for spinner... " + str(i))
+            time.sleep(1)
+            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
 
     def init_site(self):
         for f in assets:
@@ -100,6 +109,7 @@ class Notion:
             self.parse_links()
             self.remove_scripts()
             self.save_assets()
+            self.disqus()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -117,6 +127,14 @@ class Notion:
         md(local_filename)
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
+
+    def disqus(self):
+        divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
+        if divs:
+            last_div = divs[-1]
+            if last_div.text.strip() == "[comment]":
+                last_div.string = ""
+                last_div["id"] = "disqus_thread"
 
     def parse_links(self):
         for a in self.dom.find_all("a"):
@@ -168,7 +186,11 @@ class Notion:
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
         if imgs:
-            img_url = self.options["base_url"] + imgs[0]["src"][1:]
+            img_src = imgs[0]["src"]
+            if img_src.startswith('/'):
+                img_url = self.options["base_url"] + img_src[1:]
+            else:
+                img_url = img_src
             self.dom.find("meta", attrs={"property": "og:image"})[
                 "content"] = img_url
             self.dom.find("meta", attrs={"name": "twitter:image"})[
