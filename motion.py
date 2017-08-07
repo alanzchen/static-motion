@@ -33,7 +33,7 @@ def motion(is_mobile=False):
     n.mod()
     print("Index page looks good.")
     n.walk()
-    for notion in notions.itervalues():
+    for notion in notions.values():
         notion.parse_anchor()
         notion.save()
     n.parse_anchor()
