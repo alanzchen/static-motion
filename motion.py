@@ -33,6 +33,10 @@ def motion(is_mobile=False):
     n.mod()
     print("Index page looks good.")
     n.walk()
+    for notion in notions.itervalues():
+        notion.parse_anchor()
+        notion.save()
+    n.parse_anchor()
     n.save()
     print("Site generated successfully.")
     driver.quit()
@@ -75,7 +79,10 @@ class Notion:
         self.is_index = is_index
         self.is_mobile = is_mobile
         self.url = url
-        self.driver.get(url)
+        if url.startswith("https://"):
+            self.driver.get(url)
+        else:
+            self.driver.get("https://notion.so" + url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
         self.wait_spinner()
@@ -145,8 +152,7 @@ class Notion:
                 elif href[1:] == self.options["index"].split("/")[-1]:
                     a['href'] = '/'
                 else:
-                    if self.is_index:
-                        self.links.add(href)
+                    self.links.add(href)
                     a['href'] = "/" + \
                         '-'.join(href.split("/")[-1].split('-')[:-1])
 
@@ -165,7 +171,7 @@ class Notion:
         self.dom.find("title").string = self.title
         self.dom.find("meta", attrs={"name": "twitter:site"})[
             "content"] = self.options["twitter"]
-        page_path = '-'.join(self.url.split("/")[-1].split('-')[:-1])
+        page_path = '-'.join(self.url.split('/')[-1].split('-')[:-1])
         self.dom.find("meta", attrs={"name": "twitter:url"})[
             "content"] = self.options["base_url"] + page_path
         self.dom.find("meta", attrs={"property": "og:url"})[
@@ -231,15 +237,27 @@ class Notion:
             overlay.decompose()
 
     def walk(self):
-        global visited
+        global visited, notions
         for link in self.links:
             if link not in visited:
-                page = Notion("https://notion.so" + link, self.driver, options=options, is_mobile=self.is_mobile)
+                page = Notion(link, self.driver, options=options, is_mobile=self.is_mobile)
                 notions[link] = page
                 page.mod()
-                page.save()
                 visited.add(link)
                 page.walk()
+
+    def parse_anchor(self):
+        for a in self.dom.find_all("a"):
+            url = a["href"]
+            if url.startswith("https://www.notion.so/") and "#" in url:
+                url_ = url.split('/')[-1].split("#")
+                page_url = "/" + url_[0]
+                if self.url == page_url:
+                    a["target"] = ""
+                anchor = url_[1]
+                if page_url in visited:  # Only rewrites internal links
+                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
+                    print("Internal link with anchor detected: " + a['href'])
 
 
 if __name__ == "__main__":
