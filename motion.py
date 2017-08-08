@@ -159,9 +159,9 @@ class Notion:
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
-        titles = [i.text.strip() for i in self.dom.find_all(
+        titles = [i for i in self.dom.find_all(
             "div") if (i.has_attr("style") and "2.25em" in i["style"])]
-        title = titles[0]
+        title = titles[0].text.strip()
         title["id"] = 'title'
         if self.is_index:
             self.title = title
