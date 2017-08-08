@@ -162,7 +162,7 @@ class Notion:
         titles = [i for i in self.dom.find_all(
             "div") if (i.has_attr("style") and "2.25em" in i["style"])]
         title = titles[0].text.strip()
-        title["id"] = 'title'
+        titles[0]["id"] = 'title'
         if self.is_index:
             self.title = title
             self.options["site_title"] = title
