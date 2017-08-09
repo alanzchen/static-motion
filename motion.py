@@ -115,11 +115,11 @@ class Notion:
 
     def mod(self, no_retry=False):
         try:
+            self.save_assets()
             self.meta()
             # self.remove_overlay()
             self.parse_links()
             self.remove_scripts()
-            self.save_assets()
             self.disqus()
         except:
             time.sleep(2)
@@ -193,6 +193,14 @@ class Notion:
             "content"] = self.options["description"]
         self.dom.find("meta", attrs={"property": "og:description"})[
             "content"] = self.options["description"]
+        # Add Canonical URL for SEO
+        if self.is_mobile:
+            new_tag = self.dom.new_tag("link", rel='canonical',
+                                       href=self.options["base_url"] + page_path)
+        else:
+            new_tag = self.dom.new_tag("link", rel='alternate', media='only screen and (max-width: 768px)',
+                           href=self.options["base_url"] + 'm/' + page_path)
+        self.dom.find('head').append(new_tag)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
@@ -209,6 +217,9 @@ class Notion:
         else:
             self.dom.find("meta", attrs={"property": "og:image"}).decompose()
             self.dom.find("meta", attrs={"name": "twitter:image"}).decompose()
+        intercom_css = self.dom.find('#intercom-stylesheet')
+        if intercom_css:
+            intercom_css.decompose()
 
     def remove_scripts(self):
         for s in self.dom.find_all("script"):
