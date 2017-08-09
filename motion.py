@@ -108,6 +108,10 @@ class Notion:
     def init_site(self):
         for f in assets:
             download_file("https://notion.so/" + f, f)
+        if 'favicon' in self.options:
+            download_file(self.options['favicon'], "images/favicon.ico")
+        if 'apple-touch-icon' in self.options:
+            download_file(self.options['apple-touch-icon'], 'images/logo-ios.png')
 
     def mod(self, no_retry=False):
         try:
