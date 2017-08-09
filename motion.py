@@ -33,6 +33,10 @@ def motion(is_mobile=False):
     n.mod()
     print("Index page looks good.")
     n.walk()
+    for notion in notions.values():
+        notion.parse_anchor()
+        notion.save()
+    n.parse_anchor()
     n.save()
     print("Site generated successfully.")
     driver.quit()
@@ -75,7 +79,10 @@ class Notion:
         self.is_index = is_index
         self.is_mobile = is_mobile
         self.url = url
-        self.driver.get(url)
+        if url.startswith("https://"):
+            self.driver.get(url)
+        else:
+            self.driver.get("https://notion.so" + url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
         self.wait_spinner()
@@ -101,15 +108,19 @@ class Notion:
     def init_site(self):
         for f in assets:
             download_file("https://notion.so/" + f, f)
+        if 'favicon' in self.options:
+            download_file(self.options['favicon'], "images/favicon.ico")
+        if 'apple_touch_icon' in self.options:
+            download_file(self.options['apple_touch_icon'], 'images/logo-ios.png')
 
     def mod(self, no_retry=False):
         try:
+            self.save_assets()
             self.meta()
             # self.remove_overlay()
             self.clean()
             self.parse_links()
             self.remove_scripts()
-            self.save_assets()
             self.disqus()
         except:
             time.sleep(2)
@@ -154,17 +165,17 @@ class Notion:
                 elif href[1:] == self.options["index"].split("/")[-1]:
                     a['href'] = '/'
                 else:
-                    if self.is_index:
-                        self.links.add(href)
+                    self.links.add(href)
                     a['href'] = "/" + \
                         '-'.join(href.split("/")[-1].split('-')[:-1])
 
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
-        titles = [i.text.strip() for i in self.dom.find_all(
+        titles = [i for i in self.dom.find_all(
             "div") if (i.has_attr("style") and "2.25em" in i["style"])]
-        title = titles[0]
+        title = titles[0].text.strip()
+        titles[0]["id"] = 'title'
         if self.is_index:
             self.title = title
             self.options["site_title"] = title
@@ -174,7 +185,7 @@ class Notion:
         self.dom.find("title").string = self.title
         self.dom.find("meta", attrs={"name": "twitter:site"})[
             "content"] = self.options["twitter"]
-        page_path = '-'.join(self.url.split("/")[-1].split('-')[:-1])
+        page_path = '-'.join(self.url.split('/')[-1].split('-')[:-1])
         self.dom.find("meta", attrs={"name": "twitter:url"})[
             "content"] = self.options["base_url"] + page_path
         self.dom.find("meta", attrs={"property": "og:url"})[
@@ -191,6 +202,14 @@ class Notion:
             "content"] = self.options["description"]
         self.dom.find("meta", attrs={"property": "og:description"})[
             "content"] = self.options["description"]
+        # Add Canonical URL for SEO
+        if self.is_mobile:
+            new_tag = self.dom.new_tag("link", rel='canonical',
+                                       href=self.options["base_url"] + page_path)
+        else:
+            new_tag = self.dom.new_tag("link", rel='alternate', media='only screen and (max-width: 768px)',
+                           href=self.options["base_url"] + 'm/' + page_path)
+        self.dom.find('head').append(new_tag)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
@@ -207,6 +226,9 @@ class Notion:
         else:
             self.dom.find("meta", attrs={"property": "og:image"}).decompose()
             self.dom.find("meta", attrs={"name": "twitter:image"}).decompose()
+        intercom_css = self.dom.find('#intercom-stylesheet')
+        if intercom_css:
+            intercom_css.decompose()
 
     def remove_scripts(self):
         for s in self.dom.find_all("script"):
@@ -240,15 +262,27 @@ class Notion:
             overlay.decompose()
 
     def walk(self):
-        global visited
+        global visited, notions
         for link in self.links:
             if link not in visited:
-                page = Notion("https://notion.so" + link, self.driver, options=options, is_mobile=self.is_mobile)
+                page = Notion(link, self.driver, options=options, is_mobile=self.is_mobile)
                 notions[link] = page
                 page.mod()
-                page.save()
                 visited.add(link)
                 page.walk()
+
+    def parse_anchor(self):
+        for a in self.dom.find_all("a"):
+            url = a["href"]
+            if url.startswith("https://www.notion.so/") and "#" in url:
+                url_ = url.split('/')[-1].split("#")
+                page_url = "/" + url_[0]
+                if self.url == page_url:
+                    a["target"] = ""
+                anchor = url_[1]
+                if page_url in visited:  # Only rewrites internal links
+                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
+                    print("Internal link with anchor detected: " + a['href'])
 
 
 if __name__ == "__main__":
