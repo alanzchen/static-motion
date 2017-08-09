@@ -30,6 +30,8 @@ All you need is a Github account.
    - `base_url`: Your site URL.
    - `twitter`: Your twitter ID.
       Declare an empty string if you do not want it.
+   -  `apple_touch_icon`: the URL of your `apple-touch-icon.png` hosted externally.
+   -  `favicon`: the URL of your `favicon.ico` hosted externally.
 4. Bang! Wait a few minutes and your site will be up!
 5. Want to have Google Analytics and Disqus? See [customization](https://static-motion.zenan.ch/customization).
 
