@@ -1,13 +1,13 @@
 # 🚀 Static Motion
 
-Make your static site from [Notion.so](notion.so) with the help of Netlify and Travis CI.
+Make your static site from [Notion.so](https://notion.so) with the help of Netlify and Travis CI.
 
 [![Build Status](https://travis-ci.org/alanzchen/static-motion.svg?branch=master)](https://travis-ci.org/alanzchen/static-motion)
 
 **Demo:**
 
 - [Project Homepage](staticmotion.zenan.ch)
-- [Disqus Integration](https://static-motion.zenan.ch/disqus-integration-demo)
+- [Disqus Integration](https://staticmotion.zenan.ch/disqus-integration-demo)
 
 ## Installation
 
@@ -24,20 +24,21 @@ All you need is a Github account.
    - `ACCESS_TOKEN`: fill your Netlify access token.
       (Remember to secure it!)
    - `SITE_ID`: The "API ID" of your Netlify site.
-   - `index`: The URL of your index page on [Notion.so](notion.so).
+   - `index`: The URL of your index page on [Notion.so](https://notion.so).
    - `title_sep`: Your title separator. No space around!
    - `description`: Your site description. "Remember to quote your string!"
    - `base_url`: Your site URL.
    - `twitter`: Your twitter ID.
       Declare an empty string if you do not want it.
+   - `build_mobile`: Will build a mobile version of your entire site at /m/ if this option present.
    -  `apple_touch_icon`: the URL of your `apple-touch-icon.png` hosted externally.
    -  `favicon`: the URL of your `favicon.ico` hosted externally.
 4. Bang! Wait a few minutes and your site will be up!
-5. Want to have Google Analytics and Disqus? See [customization](https://static-motion.zenan.ch/customization).
+5. Want to have Google Analytics and Disqus? See [customization](https://staticmotion.zenan.ch/customization).
 
 ## Debugging
 
-As [notion.so](notion.so) make changes to their template, this utility may break at any time.
+As [notion.so](https://notion.so) make changes to their template, this utility may break at any time.
 
 Before you go, make sure you have:
 

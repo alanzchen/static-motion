@@ -118,6 +118,7 @@ class Notion:
             self.save_assets()
             self.meta()
             # self.remove_overlay()
+            self.clean()
             self.parse_links()
             self.remove_scripts()
             self.disqus()
@@ -138,6 +139,14 @@ class Notion:
         md(local_filename)
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
+
+    def clean(self):
+        cursor_div = self.dom.find(class_='notion-cursor-listener')
+        if cursor_div:
+            css = cursor_div["style"]
+            cursor_div["style"] = ";".join([i for i in css.strip().split(";")
+                                            if 'cursor' not in i])
+
 
     def disqus(self):
         divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
