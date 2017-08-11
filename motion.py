@@ -34,9 +34,7 @@ def motion(is_mobile=False):
     print("Index page looks good.")
     n.walk()
     for notion in notions.values():
-        notion.parse_anchor()
         notion.save()
-    n.parse_anchor()
     n.save()
     print("Site generated successfully.")
     driver.quit()
@@ -86,6 +84,7 @@ class Notion:
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
         self.wait_spinner()
+        self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
         if not options:
             options = {}
@@ -122,6 +121,7 @@ class Notion:
             self.parse_links()
             self.remove_scripts()
             self.disqus()
+            self.div()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -147,14 +147,16 @@ class Notion:
             cursor_div["style"] = ";".join([i for i in css.strip().split(";")
                                             if 'cursor' not in i])
 
-
     def disqus(self):
-        divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
-        if divs:
-            last_div = divs[-1]
+        if self.divs:
+            last_div = self.divs[-1]
             if last_div.text.strip() == "[comment]":
                 last_div.string = ""
                 last_div["id"] = "disqus_thread"
+
+    def div(self):
+        for div in self.divs:
+            div["id"] = div["data-block-id"]
 
     def parse_links(self):
         for a in self.dom.find_all("a"):
@@ -162,12 +164,22 @@ class Notion:
             if href.startswith('/'):
                 if href == '/login':
                     a.decompose()
+                    continue
                 elif href[1:] == self.options["index"].split("/")[-1]:
                     a['href'] = '/'
                 else:
                     self.links.add(href)
                     a['href'] = "/" + \
                         '-'.join(href.split("/")[-1].split('-')[:-1])
+            if href.startswith("https://www.notion.so/") and "#" in href:
+                url_ = href.split('/')[-1].split("#")
+                page_url = "/" + url_[0]
+                if self.url == page_url:
+                    a["target"] = ""
+                anchor = url_[1]
+                if page_url in visited:  # Only rewrites internal links
+                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
+                    print("Internal link with anchor detected: " + a['href'])
 
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
@@ -271,18 +283,6 @@ class Notion:
                 visited.add(link)
                 page.walk()
 
-    def parse_anchor(self):
-        for a in self.dom.find_all("a"):
-            url = a["href"]
-            if url.startswith("https://www.notion.so/") and "#" in url:
-                url_ = url.split('/')[-1].split("#")
-                page_url = "/" + url_[0]
-                if self.url == page_url:
-                    a["target"] = ""
-                anchor = url_[1]
-                if page_url in visited:  # Only rewrites internal links
-                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
-                    print("Internal link with anchor detected: " + a['href'])
 
 
 if __name__ == "__main__":
