@@ -121,6 +121,7 @@ class Notion:
             self.parse_links()
             self.remove_scripts()
             self.disqus()
+            self.iframe()
             self.div()
         except:
             time.sleep(2)
@@ -157,6 +158,13 @@ class Notion:
     def div(self):
         for div in self.divs:
             div["id"] = div["data-block-id"]
+
+    def iframe(self):
+        for iframe in self.dom.find('iframe'):
+            if iframe.has_attr('style'):
+                css = iframe['style'].split(';')
+                new_css = [i for i in css if 'pointer' not in i]
+                iframe['style'] = ';'.join(new_css)
 
     def parse_links(self):
         for a in self.dom.find_all("a"):
