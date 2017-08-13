@@ -179,15 +179,14 @@ class Notion:
                     self.links.add(href)
                     a['href'] = "/" + \
                         '-'.join(href.split("/")[-1].split('-')[:-1])
-            if href.startswith("https://www.notion.so/") and "#" in href:
+            if 'anchor' in self.options and href.startswith("https://www.notion.so/") and "#" in href:
                 url_ = href.split('/')[-1].split("#")
                 page_url = "/" + url_[0]
                 if self.url == page_url:
                     a["target"] = ""
                 anchor = url_[1]
-                if page_url in visited:  # Only rewrites internal links
-                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
-                    print("Internal link with anchor detected: " + a['href'])
+                a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
+                print("Internal link with anchor detected: " + a['href'])
 
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
