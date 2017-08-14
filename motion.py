@@ -182,10 +182,12 @@ class Notion:
             if 'anchor' in self.options and href.startswith("https://www.notion.so/") and "#" in href:
                 url_ = href.split('/')[-1].split("#")
                 page_url = "/" + url_[0]
+                anchor = url_[1]
                 if self.url == page_url:
                     a["target"] = ""
-                anchor = url_[1]
-                a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
+                    a["href"] = '#' + anchor
+                else:
+                    a["href"] = '/' + '-'.join(url_[0].split('-')[:-1]) + '#' + anchor
                 print("Internal link with anchor detected: " + a['href'])
 
     def meta(self):
