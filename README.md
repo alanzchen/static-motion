@@ -30,9 +30,10 @@ All you need is a Github account.
    - `base_url`: Your site URL.
    - `twitter`: Your twitter ID.
       Declare an empty string if you do not want it.
-   - `build_mobile`: Will build a mobile version of your entire site at /m/ if this option present.
-   -  `apple_touch_icon`: the URL of your `apple-touch-icon.png` hosted externally.
-   -  `favicon`: the URL of your `favicon.ico` hosted externally.
+   - `build_mobile`: Will build a mobile version of your entire site at /m/ if this option presents.
+   - `apple_touch_icon`: the URL of your `apple-touch-icon.png` hosted externally.
+   - `favicon`: the URL of your `favicon.ico` hosted externally.
+   - `anchor`: Enable anchor detection if this option presents. All urls starts with `https://www.notion.so` with `#` somewhere in the url will be rewritten to your relative path.
 4. Bang! Wait a few minutes and your site will be up!
 5. Want to have Google Analytics and Disqus? See [customization](https://staticmotion.zenan.ch/customization).
 
