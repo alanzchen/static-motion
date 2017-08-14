@@ -160,7 +160,7 @@ class Notion:
             div["id"] = div["data-block-id"]
 
     def iframe(self):
-        for iframe in self.dom.find('iframe'):
+        for iframe in self.dom.find_all('iframe'):
             if iframe.has_attr('style'):
                 css = iframe['style'].split(';')
                 new_css = [i for i in css if 'pointer' not in i]
