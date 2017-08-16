@@ -172,12 +172,12 @@ class Notion:
     def div(self):
         for div in self.divs:
             div["id"] = div["data-block-id"]
-            div["class"] = "content-block"
+            div["class"] = ["content-block"]
             # For lightGallery.js
             img = div.find('img')
             if img and img.has_attr('src'):
                 div['data-src'] = img['src']
-                div['class'] += 'lg'
+                div['class'].append('lg')
 
     def iframe(self):
         for iframe in self.dom.find_all('iframe'):
