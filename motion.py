@@ -93,8 +93,11 @@ class Notion:
             self.filename = "index.html"
             self.init_site()
         else:
-            self.filename = '-'.join(url.split("/")
-                                     [-1].split('-')[:-1]) + ".html"
+            url_list = url.split("/")[-1].split('-')
+            if len(url_list) > 1:
+                self.filename = '-'.join(url_list[:-1]) + ".html"
+            else:
+                self.filename = url_list[0] + ".html"
 
     def wait_spinner(self):
         i = 0
@@ -120,9 +123,9 @@ class Notion:
             self.clean()
             self.parse_links()
             self.remove_scripts()
-            self.disqus()
             self.iframe()
             self.div()
+            self.disqus()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -147,6 +150,14 @@ class Notion:
             css = cursor_div["style"]
             cursor_div["style"] = ";".join([i for i in css.strip().split(";")
                                             if 'cursor' not in i])
+        wrapper_div = [i for i in self.dom.find_all("div")
+                       if i.has_attr('style') and 'padding-bottom: 30vh;' in i['style']]
+        if wrapper_div:
+            wrapper_div = wrapper_div[0]
+            css = wrapper_div['style']
+            wrapper_div['style'] = ";".join([i for i in css.strip().split(";")
+                                             if '30vh' not in i])
+
 
     def disqus(self):
         if self.divs:
@@ -160,7 +171,7 @@ class Notion:
             div["id"] = div["data-block-id"]
 
     def iframe(self):
-        for iframe in self.dom.find('iframe'):
+        for iframe in self.dom.find_all('iframe'):
             if iframe.has_attr('style'):
                 css = iframe['style'].split(';')
                 new_css = [i for i in css if 'pointer' not in i]
@@ -177,8 +188,11 @@ class Notion:
                     a['href'] = '/'
                 else:
                     self.links.add(href)
-                    a['href'] = "/" + \
-                        '-'.join(href.split("/")[-1].split('-')[:-1])
+                    href_list = href.split("/")[-1].split('-')
+                    if len(href_list) > 1:
+                        a['href'] = "/" + '-'.join(href_list[:-1])
+                    else:
+                        a['href'] = "/" + href_list[0]
             if 'anchor' in self.options and href.startswith("https://www.notion.so/") and "#" in href:
                 url_ = href.split('/')[-1].split("#")
                 page_url = "/" + url_[0]
