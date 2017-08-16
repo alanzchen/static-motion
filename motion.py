@@ -176,7 +176,7 @@ class Notion:
             # For lightGallery.js
             img = div.find('img')
             if img and img.has_attr('src'):
-                div['data-src'] = img['src']
+                img['data-src'] = img['src']
                 div['class'].append('lg')
 
     def iframe(self):
