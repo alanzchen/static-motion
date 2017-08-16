@@ -93,8 +93,11 @@ class Notion:
             self.filename = "index.html"
             self.init_site()
         else:
-            self.filename = '-'.join(url.split("/")
-                                     [-1].split('-')[:-1]) + ".html"
+            url_list = url.split("/")[-1].split('-')
+            if len(url_list) > 1:
+                self.filename = '-'.join(url_list[:-1]) + ".html"
+            else:
+                self.filename = url_list[0] + ".html"
 
     def wait_spinner(self):
         i = 0
