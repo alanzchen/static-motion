@@ -177,6 +177,7 @@ class Notion:
             img = div.find('img')
             if img and img.has_attr('src'):
                 div['data-src'] = img['src']
+                div['class'] += 'lg'
 
     def iframe(self):
         for iframe in self.dom.find_all('iframe'):
