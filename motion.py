@@ -175,7 +175,7 @@ class Notion:
             div["class"] = ["content-block"]
             # For lightGallery.js
             img = div.find('img')
-            if img and img.has_attr('src'):
+            if img and img.has_attr('src') and not div.find('svg'):
                 img['data-src'] = img['src']
                 div['class'].append('lg')
 
