@@ -120,9 +120,9 @@ class Notion:
             self.clean()
             self.parse_links()
             self.remove_scripts()
-            self.disqus()
             self.iframe()
             self.div()
+            self.disqus()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -147,6 +147,14 @@ class Notion:
             css = cursor_div["style"]
             cursor_div["style"] = ";".join([i for i in css.strip().split(";")
                                             if 'cursor' not in i])
+        wrapper_div = [i for i in self.dom.find_all("div")
+                       if 'padding-bottom: 30vh;' in i]
+        if wrapper_div:
+            wrapper_div = wrapper_div[0]
+            css = wrapper_div['style']
+            wrapper_div['style'] = ";".join([i for i in css.strip().split(";")
+                                             if '30vh' not in i])
+
 
     def disqus(self):
         if self.divs:
