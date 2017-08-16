@@ -151,7 +151,7 @@ class Notion:
             cursor_div["style"] = ";".join([i for i in css.strip().split(";")
                                             if 'cursor' not in i])
         wrapper_div = [i for i in self.dom.find_all("div")
-                       if 'padding-bottom: 30vh;' in i]
+                       if i.has_attr('style') and 'padding-bottom: 30vh;' in i['style']]
         if wrapper_div:
             wrapper_div = wrapper_div[0]
             css = wrapper_div['style']
