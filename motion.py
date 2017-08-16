@@ -174,10 +174,9 @@ class Notion:
             div["id"] = div["data-block-id"]
             div["class"] = "content-block"
             # For lightGallery.js
-            imgs = div.find_all('img')
-            for img in imgs:
-                if img.has_attr('src'):
-                    img['data-src'] = img['src']
+            img = div.find('img')
+            if img.has_attr('src'):
+                div['data-src'] = img['src']
 
     def iframe(self):
         for iframe in self.dom.find_all('iframe'):
