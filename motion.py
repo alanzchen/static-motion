@@ -185,8 +185,11 @@ class Notion:
                     a['href'] = '/'
                 else:
                     self.links.add(href)
-                    a['href'] = "/" + \
-                        '-'.join(href.split("/")[-1].split('-')[:-1])
+                    href_list = href.split("/")[-1].split('-')
+                    if len(href_list) > 1:
+                        a['href'] = "/" + '-'.join(href_list[:-1])
+                    else:
+                        a['href'] = "/" + href_list[0]
             if 'anchor' in self.options and href.startswith("https://www.notion.so/") and "#" in href:
                 url_ = href.split('/')[-1].split("#")
                 page_url = "/" + url_[0]
