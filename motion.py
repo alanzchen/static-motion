@@ -157,18 +157,27 @@ class Notion:
             css = wrapper_div['style']
             wrapper_div['style'] = ";".join([i for i in css.strip().split(";")
                                              if '30vh' not in i])
+        intercom_css = self.dom.find('style', id_="intercom-stylesheet")
+        if intercom_css:
+            intercom_css.decompose()
+
 
 
     def disqus(self):
-        if self.divs:
-            last_div = self.divs[-1]
-            if last_div.text.strip() == "[comment]":
-                last_div.string = ""
-                last_div["id"] = "disqus_thread"
+        for div in self.divs:
+            if div.text.strip() == "[comment]":
+                div.string = ""
+                div["id"] = "disqus_thread"
 
     def div(self):
         for div in self.divs:
             div["id"] = div["data-block-id"]
+            div["class"] = ["content-block"]
+            # For lightGallery.js
+            img = div.find('img')
+            if img and img.has_attr('src') and not div.find('svg'):
+                img['data-src'] = img['src']
+                div['class'].append('lg')
 
     def iframe(self):
         for iframe in self.dom.find_all('iframe'):
@@ -261,9 +270,6 @@ class Notion:
         else:
             self.dom.find("meta", attrs={"property": "og:image"}).decompose()
             self.dom.find("meta", attrs={"name": "twitter:image"}).decompose()
-        intercom_css = self.dom.find('#intercom-stylesheet')
-        if intercom_css:
-            intercom_css.decompose()
 
     def remove_scripts(self):
         for s in self.dom.find_all("script"):
