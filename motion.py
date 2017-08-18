@@ -170,9 +170,19 @@ class Notion:
                 div["id"] = "disqus_thread"
 
     def div(self):
+        in_comment = False
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
+            text = div.text.strip()
+            if text.startswith('/*'):
+                in_comment = True
+                div.decompose()
+            if text.endswith('*/'):
+                in_comment = False
+            if in_comment:
+                div.decompose()
+                continue
             # For lightGallery.js
             img = div.find('img')
             if img and img.has_attr('src') and not div.find('a'):
