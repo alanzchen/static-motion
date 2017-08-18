@@ -175,11 +175,12 @@ class Notion:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
             text = div.text.strip()
-            if text.startswith('/*'):
+            if text == '/*':
                 in_comment = True
                 div.decompose()
-            if text.endswith('*/'):
+            if text == '*/':
                 in_comment = False
+                div.decompose()
             if in_comment:
                 div.decompose()
                 continue
