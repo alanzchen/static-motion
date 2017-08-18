@@ -6,7 +6,7 @@ Make your static site from [Notion.so](https://notion.so) with the help of Netli
 
 **Demo:**
 
-- [Project Homepage](staticmotion.zenan.ch)
+- [Project Homepage](https://staticmotion.zenan.ch)
 - [Disqus Integration](https://staticmotion.zenan.ch/disqus-integration-demo)
 
 ## Installation
