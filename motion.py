@@ -114,6 +114,8 @@ class Notion:
             download_file(self.options['favicon'], "images/favicon.ico")
         if 'apple_touch_icon' in self.options:
             download_file(self.options['apple_touch_icon'], 'images/logo-ios.png')
+        if 'atom' in self.options:
+            download_file(self.options['atom'], 'feed')
 
     def mod(self, no_retry=False):
         try:
@@ -265,6 +267,8 @@ class Notion:
             new_tag = self.dom.new_tag("link", rel='alternate', media='only screen and (max-width: 768px)',
                            href=self.options["base_url"] + 'm/' + page_path)
         self.dom.find('head').append(new_tag)
+        if 'atom' in self.options:
+            atom = self.dom.new_tag('link', rel='alternate', type="application/rss+xml", href="/feed")
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
