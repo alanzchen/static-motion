@@ -40,12 +40,12 @@ def motion(is_mobile=False):
     driver.quit()
 
 
-def download_file(url, local_filename):
+def download_file(url, local_filename, overwrite=False):
     # https://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py#16696317
     if local_filename.startswith("/"):
         local_filename = local_filename[1:]
     local_filename = "site/" + local_filename
-    if exists(local_filename):
+    if exists(local_filename) and not overwrite:
         print("File " + local_filename + " found. Skipping.")
         return
     md(local_filename)
@@ -115,7 +115,7 @@ class Notion:
         if 'apple_touch_icon' in self.options:
             download_file(self.options['apple_touch_icon'], 'images/logo-ios.png')
         if 'atom' in self.options:
-            download_file(self.options['atom'], 'feed')
+            download_file(self.options['atom'], 'feed', overwrite=True)
 
     def mod(self, no_retry=False):
         try:
@@ -269,6 +269,7 @@ class Notion:
         self.dom.find('head').append(new_tag)
         if 'atom' in self.options:
             atom = self.dom.new_tag('link', rel='alternate', type="application/rss+xml", href="/feed")
+        self.dom.find('head').append(atom)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
