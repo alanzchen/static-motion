@@ -268,7 +268,7 @@ class Notion:
                            href=self.options["base_url"] + 'm/' + page_path)
         self.dom.find('head').append(new_tag)
         if 'atom' in self.options:
-            atom = self.dom.new_tag('link', rel='alternate', type="application/rss+xml", href="/feed")
+            atom = self.dom.new_tag('link', rel='feed', type="application/atom+xml", href="/feed")
         self.dom.find('head').append(atom)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
