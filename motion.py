@@ -196,7 +196,7 @@ class Notion:
                 in_html = False
                 div.decompose()
             if in_html:
-                div.replace_with(BeautifulSoup(div.text), "html.parser")
+                div.replace_with(BeautifulSoup(div.text, "html.parser"))
                 continue
             # For lightGallery.js
             img = div.find('img')
