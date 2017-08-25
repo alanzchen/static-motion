@@ -200,7 +200,12 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                div.replace_with(BeautifulSoup(div.text, "html.parser"))
+                inner_html = BeautifulSoup(div.text, "html.parser")
+                div.replace_with(inner_html)
+                print('Custom HTML inserted: ')
+                print('----------------------')
+                print(div)
+                print('----------------------')
                 continue
             # For lightGallery.js
             img = div.find('img')
