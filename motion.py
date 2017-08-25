@@ -182,9 +182,11 @@ class Notion:
             if text == '/*':
                 in_comment = True
                 div.decompose()
+                continue
             if text == '*/':
                 in_comment = False
                 div.decompose()
+                continue
             if in_comment:
                 div.decompose()
                 continue
@@ -192,9 +194,11 @@ class Notion:
             if text == '[html]':
                 in_html = True
                 div.decompose()
+                continue
             if text == '[/html]':
                 in_html = False
                 div.decompose()
+                continue
             if in_html:
                 div.replace_with(BeautifulSoup(div.text, "html.parser"))
                 continue
