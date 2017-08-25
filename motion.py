@@ -173,10 +173,12 @@ class Notion:
 
     def div(self):
         in_comment = False
+        in_html = False
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
             text = div.text.strip()
+            # Comments
             if text == '/*':
                 in_comment = True
                 div.decompose()
@@ -185,6 +187,16 @@ class Notion:
                 div.decompose()
             if in_comment:
                 div.decompose()
+                continue
+            # HTML
+            if text == '[html]':
+                in_html = True
+                div.decompose()
+            if text == '[/html]':
+                in_html = False
+                div.decompose()
+            if in_html:
+                div.string = div.text
                 continue
             # For lightGallery.js
             img = div.find('img')
