@@ -133,6 +133,7 @@ class Notion:
             print("Exception occurred, sleep for 2 secs and retry...")
             self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
             if no_retry:
+                print(self.dom)
                 raise
             else:
                 self.mod(no_retry=True)
@@ -162,7 +163,6 @@ class Notion:
         intercom_css = self.dom.find('style', id_="intercom-stylesheet")
         if intercom_css:
             intercom_css.decompose()
-
 
 
     def disqus(self):
