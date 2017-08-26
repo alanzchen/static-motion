@@ -148,7 +148,7 @@ class Notion:
         md(local_filename)
         with open(local_filename, "w") as f:
             f.write(str(self.dom))
-        with open(local_filename + '.raw', "w") as f:
+        with open(local_filename + '-raw.html', "w") as f:
             f.write(self.source)
 
     def clean(self):
