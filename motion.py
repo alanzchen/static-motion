@@ -144,7 +144,7 @@ class Notion:
         else:
             local_filename = "site/" + self.filename
         md(local_filename)
-        with open(local_filename, "w") as f:
+        with open(local_filename, "wb") as f:
             f.write(self.dom.prettify("utf-8"))
 
     def clean(self):
