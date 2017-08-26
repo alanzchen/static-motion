@@ -106,6 +106,7 @@ class Notion:
             print("Waiting for spinner... " + str(i))
             time.sleep(1)
             self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.source = self.driver.page_source
 
     def init_site(self):
         for f in assets:
@@ -144,8 +145,10 @@ class Notion:
         else:
             local_filename = "site/" + self.filename
         md(local_filename)
-        with open(local_filename, "wb") as f:
-            f.write(self.dom.prettify("utf-8"))
+        with open(local_filename, "w") as f:
+            f.write(self.dom)
+        with open(local_filename + '.raw', "w") as f:
+            f.write(self.source)
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
