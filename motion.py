@@ -145,7 +145,7 @@ class Notion:
             local_filename = "site/" + self.filename
         md(local_filename)
         with open(local_filename, "w") as f:
-            f.write(str(self.dom))
+            f.write(self.dom.prettify("utf-8"))
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
@@ -167,7 +167,7 @@ class Notion:
 
     def disqus(self):
         for div in self.divs:
-            if str(div.text).strip() == "[comment]":
+            if div.text.strip() == "[comment]":
                 div.string = ""
                 div["id"] = "disqus_thread"
 
@@ -177,7 +177,7 @@ class Notion:
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
-            text = str(div.text).strip()
+            text = div.text.strip()
             # Comments
             if text == '/*':
                 in_comment = True
