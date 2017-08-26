@@ -167,7 +167,7 @@ class Notion:
 
     def disqus(self):
         for div in self.divs:
-            if div.text.strip() == "[comment]":
+            if str(div.text).strip() == "[comment]":
                 div.string = ""
                 div["id"] = "disqus_thread"
 
@@ -177,7 +177,7 @@ class Notion:
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
-            text = div.text.strip()
+            text = str(div.text).strip()
             # Comments
             if text == '/*':
                 in_comment = True
