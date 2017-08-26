@@ -146,7 +146,7 @@ class Notion:
             local_filename = "site/" + self.filename
         md(local_filename)
         with open(local_filename, "w") as f:
-            f.write(self.dom)
+            f.write(str(self.dom))
         with open(local_filename + '.raw', "w") as f:
             f.write(self.source)
 
