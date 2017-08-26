@@ -83,6 +83,7 @@ class Notion:
             self.driver.get("https://notion.so" + url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
+        self.source = self.driver.page_source
         self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
