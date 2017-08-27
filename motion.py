@@ -152,6 +152,13 @@ class Notion:
             f.write(self.source)
         with open(local_filename + '-bs.html', "w") as f:
             f.write(str(BeautifulSoup(self.source, 'lxml')))
+        # a solution
+        import re
+
+        def clean_line(line):
+            return re.sub(r'[ ]{2,}', ' ', re.sub(r'[\r\n]', '', line))
+        with open(local_filename + '-fix.html', "w") as f:
+            f.write(''.join([clean_line(line) for line in self.dom.findAll(text=True)]))
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
