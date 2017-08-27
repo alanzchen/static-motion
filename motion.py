@@ -131,6 +131,7 @@ class Notion:
             self.iframe()
             self.div()
             self.disqus()
+            self.gen_html()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
@@ -147,6 +148,10 @@ class Notion:
         else:
             local_filename = "site/" + self.filename
         md(local_filename)
+        with open(local_filename, "w") as f:
+            f.write(self.html)
+
+    def gen_html(self):
         s = str(self.dom)
         d_source = pq(self.source)
         d = pq(s)
@@ -156,9 +161,7 @@ class Notion:
             print(d_source(selector).html())
             tmp = d_source(selector).outer_html().replace(' data-block-id=', ' id=')
             s = s.replace('<' + div_id + '>', tmp)
-        with open(local_filename, "w") as f:
-            f.write(s)
-
+        self.html = s
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
