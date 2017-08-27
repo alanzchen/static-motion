@@ -147,17 +147,17 @@ class Notion:
         else:
             local_filename = "site/" + self.filename
         md(local_filename)
+        s = str(self.dom)
         d_source = pq(self.source)
-        d = pq(str(self.dom))
+        d = pq(s)
         for div_id in self.code_block:
             print('Processing code block: ', div_id)
             selector = 'div[data-block-id="' + div_id + '"]'
-            print(d(selector))
-            print('----')
-            print(d_source(selector))
-            d(selector).html(d_source(selector).html())
+            print(d_source(selector).html())
+            tmp = d_source(selector).outer_html().replace(' data-block-id=', ' id=')
+            s = s.replace('<' + div_id + '>', tmp)
         with open(local_filename, "w") as f:
-            f.write(d.outer_html())
+            f.write(s)
 
 
     def clean(self):
@@ -192,6 +192,8 @@ class Notion:
             div["class"] = ["content-block"]
             if div.find('span', class_='token'):
                 self.code_block.append(div["id"])
+                div.replace_with('<' + div['id'] + '>')
+                continue
             text = div.text.strip()
             # Comments
             if text == '/*':
