@@ -5,7 +5,7 @@ from os.path import exists
 from os import mkdir
 import requests
 import time
-
+from pyquery import PyQuery as pq
 from const import assets
 from os import environ as options
 
@@ -87,6 +87,7 @@ class Notion:
         self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
+        self.code_block = []
         if not options:
             options = {}
         self.options = options
@@ -146,19 +147,15 @@ class Notion:
         else:
             local_filename = "site/" + self.filename
         md(local_filename)
+        d_source = pq(self.source)
+        d = pq(str(self.dom))
+        for div_id in self.code_block:
+            selector = 'div[data-block-id="' + div_id + '"]'
+            tmp = d(selector)
+            tmp.html(d_source(selector).html())
         with open(local_filename, "w") as f:
-            f.write(str(self.dom))
-        with open(local_filename + '-raw.html', "w") as f:
-            f.write(self.source)
-        with open(local_filename + '-bs.html', "w") as f:
-            f.write(str(BeautifulSoup(self.source, 'lxml')))
-        # a solution
-        import re
+            f.write(d.html())
 
-        def clean_line(line):
-            return re.sub(r'[ ]{2,}', ' ', re.sub(r'[\r\n]', '', line))
-        with open(local_filename + '-fix.html', "w") as f:
-            f.write(''.join([clean_line(line) for line in self.dom.findAll(text=True)]))
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
@@ -190,6 +187,8 @@ class Notion:
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
+            if div.find('span', class_='token'):
+                self.code_block.append(div["id"])
             text = div.text.strip()
             # Comments
             if text == '/*':
