@@ -154,7 +154,8 @@ class Notion:
     def gen_html(self):
         s = str(self.dom)
         d_source = pq(self.source)
-        d = pq(s)
+        print(d_source)
+        print(len(self.source))
         for div_id in self.code_block:
             print('Processing code block: ', div_id)
             selector = 'div[data-block-id="' + div_id + '"]'
