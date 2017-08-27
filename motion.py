@@ -150,11 +150,14 @@ class Notion:
         d_source = pq(self.source)
         d = pq(str(self.dom))
         for div_id in self.code_block:
+            print('Processing code block: ', div_id)
             selector = 'div[data-block-id="' + div_id + '"]'
-            tmp = d(selector)
-            tmp.html(d_source(selector).html())
+            print(d(selector))
+            print('----')
+            print(d_source(selector))
+            d(selector).html(d_source(selector).html())
         with open(local_filename, "w") as f:
-            f.write(d.html())
+            f.write(d.outer_html())
 
 
     def clean(self):
