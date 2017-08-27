@@ -194,10 +194,6 @@ class Notion:
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
-            if div.find('span', class_='token'):
-                self.code_block.append(div["id"])
-                div.replace_with('<' + div['id'] + '>')
-                continue
             text = div.text.strip()
             # Comments
             if text == '/*':
@@ -228,6 +224,10 @@ class Notion:
                 print(inner_html)
                 print('----------------------')
                 print(div)
+                continue
+            if div.find('span', class_='token'):
+                self.code_block.append(div["id"])
+                div.replace_with('<' + div['id'] + '>')
                 continue
             # For lightGallery.js
             img = div.find('img')
