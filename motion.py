@@ -151,7 +151,7 @@ class Notion:
         with open(local_filename + '-raw.html', "w") as f:
             f.write(self.source)
         with open(local_filename + '-bs.html', "w") as f:
-            f.write(str(BeautifulSoup(self.source, 'html.parser')))
+            f.write(str(BeautifulSoup(self.source, 'lxml')))
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
