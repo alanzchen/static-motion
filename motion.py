@@ -154,6 +154,7 @@ class Notion:
     def gen_html(self):
         s = str(self.dom)
         d_source = pq(self.source)
+        print('d_source')
         print(d_source)
         print(len(self.source))
         for div_id in self.code_block:
