@@ -160,8 +160,8 @@ class Notion:
             print('Processing code block: ', div_id)
             selector = 'div[data-block-id="' + div_id + '"]'
             print(d_source(selector).html())
-            tmp = d_source(selector).outer_html().replace(' data-block-id=', ' id=')
-            s = s.replace('<' + div_id + '>', tmp)
+            # tmp = d_source(selector).outer_html().replace(' data-block-id=', ' id=')
+            # s = s.replace('<' + div_id + '>', tmp)
         self.html = s
 
     def clean(self):
