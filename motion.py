@@ -207,7 +207,7 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                inner_html = BeautifulSoup(div.text.strip('HTML').replace('</span>!(notion)!', '</span>'), "html.parser")
+                inner_html = BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML')
                 div.replace_with(inner_html)
                 print('Custom HTML inserted: ')
                 print('----------------------')
