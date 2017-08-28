@@ -5,7 +5,7 @@ from os.path import exists
 from os import mkdir
 import requests
 import time
-
+from pyquery import PyQuery as pq
 from const import assets
 from os import environ as options
 
@@ -40,12 +40,12 @@ def motion(is_mobile=False):
     driver.quit()
 
 
-def download_file(url, local_filename):
+def download_file(url, local_filename, overwrite=False):
     # https://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py#16696317
     if local_filename.startswith("/"):
         local_filename = local_filename[1:]
     local_filename = "site/" + local_filename
-    if exists(local_filename):
+    if exists(local_filename) and not overwrite:
         print("File " + local_filename + " found. Skipping.")
         return
     md(local_filename)
@@ -83,6 +83,7 @@ class Notion:
             self.driver.get("https://notion.so" + url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
+        self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
         self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
@@ -105,7 +106,8 @@ class Notion:
             i += 1
             print("Waiting for spinner... " + str(i))
             time.sleep(1)
-            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
+            self.source = self.driver.page_source
 
     def init_site(self):
         for f in assets:
@@ -114,6 +116,8 @@ class Notion:
             download_file(self.options['favicon'], "images/favicon.ico")
         if 'apple_touch_icon' in self.options:
             download_file(self.options['apple_touch_icon'], 'images/logo-ios.png')
+        if 'atom' in self.options:
+            download_file(self.options['atom'], 'feed', overwrite=True)
 
     def mod(self, no_retry=False):
         try:
@@ -126,11 +130,13 @@ class Notion:
             self.iframe()
             self.div()
             self.disqus()
+            self.gen_html()
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
-            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             if no_retry:
+                print(self.dom)
                 raise
             else:
                 self.mod(no_retry=True)
@@ -142,7 +148,11 @@ class Notion:
             local_filename = "site/" + self.filename
         md(local_filename)
         with open(local_filename, "w") as f:
-            f.write(str(self.dom))
+            f.write(self.html)
+
+    def gen_html(self):
+        s = str(self.dom)
+        self.html = s.replace('</span>!(notion)!', '</span>')
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
@@ -162,7 +172,6 @@ class Notion:
             intercom_css.decompose()
 
 
-
     def disqus(self):
         for div in self.divs:
             if div.text.strip() == "[comment]":
@@ -171,18 +180,40 @@ class Notion:
 
     def div(self):
         in_comment = False
+        in_html = False
         for div in self.divs:
             div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
             text = div.text.strip()
+            # Comments
             if text == '/*':
                 in_comment = True
                 div.decompose()
+                continue
             if text == '*/':
                 in_comment = False
                 div.decompose()
+                continue
             if in_comment:
                 div.decompose()
+                continue
+            # HTML
+            if text == '[html]':
+                in_html = True
+                div.decompose()
+                continue
+            if text == '[/html]':
+                in_html = False
+                div.decompose()
+                continue
+            if in_html:
+                inner_html = BeautifulSoup(div.text.strip('HTML'), "html.parser")
+                div.replace_with(inner_html)
+                print('Custom HTML inserted: ')
+                print('----------------------')
+                print(inner_html)
+                print('----------------------')
+                print(div)
                 continue
             # For lightGallery.js
             img = div.find('img')
@@ -265,6 +296,9 @@ class Notion:
             new_tag = self.dom.new_tag("link", rel='alternate', media='only screen and (max-width: 768px)',
                            href=self.options["base_url"] + 'm/' + page_path)
         self.dom.find('head').append(new_tag)
+        if 'atom' in self.options:
+            atom = self.dom.new_tag('link', rel='feed', type="application/atom+xml", href="/feed")
+        self.dom.find('head').append(atom)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
