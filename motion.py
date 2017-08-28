@@ -298,7 +298,7 @@ class Notion:
         self.dom.find('head').append(new_tag)
         if 'atom' in self.options:
             atom = self.dom.new_tag('link', rel='feed', type="application/atom+xml", href="/feed")
-        self.dom.find('head').append(atom)
+            self.dom.find('head').append(atom)
         print("Title: " + self.dom.find("title").string)
         imgs = [i for i in self.dom.find_all('img') if i.has_attr(
             "style") and "30vh" in i["style"]]
