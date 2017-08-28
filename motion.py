@@ -218,12 +218,13 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                inner_html = BeautifulSoup(div.text, "html.parser")
+                inner_html = BeautifulSoup(div.text.strip('HTML'), "html.parser")
                 div.replace_with(inner_html)
                 print('Custom HTML inserted: ')
                 print('----------------------')
-                print(div)
+                print(inner_html)
                 print('----------------------')
+                print(div)
                 continue
             if div.find('span', class_='token'):
                 self.code_block.append(div["id"])
