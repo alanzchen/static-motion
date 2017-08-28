@@ -83,11 +83,10 @@ class Notion:
             self.driver.get("https://notion.so" + url)
         time.sleep(wait)
         self.dom = BeautifulSoup(driver.page_source, "html.parser")
-        self.source = self.driver.page_source
+        self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
         self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
-        self.code_block = []
         if not options:
             options = {}
         self.options = options
@@ -107,7 +106,7 @@ class Notion:
             i += 1
             print("Waiting for spinner... " + str(i))
             time.sleep(1)
-            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             self.source = self.driver.page_source
 
     def init_site(self):
@@ -135,7 +134,7 @@ class Notion:
         except:
             time.sleep(2)
             print("Exception occurred, sleep for 2 secs and retry...")
-            self.dom = BeautifulSoup(self.driver.page_source, "html.parser")
+            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             if no_retry:
                 print(self.dom)
                 raise
@@ -153,17 +152,7 @@ class Notion:
 
     def gen_html(self):
         s = str(self.dom)
-        d_source = pq(self.source)
-        print('d_source')
-        print(d_source)
-        print(len(self.source))
-        for div_id in self.code_block:
-            print('Processing code block: ', div_id)
-            selector = 'div[data-block-id="' + div_id + '"]'
-            print(d_source(selector).html())
-            # tmp = d_source(selector).outer_html().replace(' data-block-id=', ' id=')
-            # s = s.replace('<' + div_id + '>', tmp)
-        self.html = s
+        self.html = s.replace('</span>!(notion)!', '</span>')
 
     def clean(self):
         cursor_div = self.dom.find(class_='notion-cursor-listener')
@@ -225,10 +214,6 @@ class Notion:
                 print(inner_html)
                 print('----------------------')
                 print(div)
-                continue
-            if div.find('span', class_='token'):
-                self.code_block.append(div["id"])
-                div.replace_with('<' + div['id'] + '>')
                 continue
             # For lightGallery.js
             img = div.find('img')
