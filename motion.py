@@ -182,9 +182,12 @@ class Notion:
         in_comment = False
         in_html = False
         for div in self.divs:
+            print(type(div))
             if div:
                 div["id"] = div["data-block-id"]
-            div["class"] = ["content-block"]
+                div["class"] = ["content-block"]
+            else:
+                continue
             text = div.text.strip()
             # Comments
             if text == '/*':
