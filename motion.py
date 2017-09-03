@@ -131,8 +131,9 @@ class Notion:
             self.div()
             self.disqus()
             self.gen_html()
-        except:
+        except Exception as e:
             time.sleep(2)
+            print(e)
             print("Exception occurred, sleep for 2 secs and retry...")
             self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             if no_retry:
