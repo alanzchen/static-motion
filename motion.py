@@ -182,7 +182,7 @@ class Notion:
         in_comment = False
         in_html = False
         for div in self.divs:
-            if div.has_attr('data-block-id'):
+            if div:
                 div["id"] = div["data-block-id"]
             div["class"] = ["content-block"]
             text = div.text.strip()
