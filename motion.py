@@ -5,7 +5,6 @@ from os.path import exists
 from os import mkdir
 import requests
 import time
-from pyquery import PyQuery as pq
 from const import assets
 from os import environ as options
 
