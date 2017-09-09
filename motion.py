@@ -184,7 +184,6 @@ class Notion:
         # Redo
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         for div in self.divs:
-            print(type(div))
             try:
                 div["id"] = div["data-block-id"]
                 div["class"] = ["content-block"]
