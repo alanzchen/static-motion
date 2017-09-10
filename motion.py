@@ -5,7 +5,6 @@ from os.path import exists
 from os import mkdir
 import requests
 import time
-from pyquery import PyQuery as pq
 from const import assets
 from os import environ as options
 
@@ -131,14 +130,15 @@ class Notion:
             self.div()
             self.disqus()
             self.gen_html()
-        except:
-            time.sleep(2)
-            print("Exception occurred, sleep for 2 secs and retry...")
+        except Exception as e:
+            print(e)
             self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             if no_retry:
-                print(self.dom)
+                print("Unhandled Error, exciting...")
                 raise
             else:
+                print("Exception occurred, sleep for 2 secs and retry...")
+                time.sleep(2)
                 self.mod(no_retry=True)
 
     def save(self):
@@ -181,9 +181,14 @@ class Notion:
     def div(self):
         in_comment = False
         in_html = False
+        # Redo
+        self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         for div in self.divs:
-            div["id"] = div["data-block-id"]
-            div["class"] = ["content-block"]
+            try:
+                div["id"] = div["data-block-id"]
+                div["class"] = ["content-block"]
+            except TypeError:
+                continue
             text = div.text.strip()
             # Comments
             if text == '/*':
@@ -207,7 +212,7 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                inner_html = BeautifulSoup(div.text.strip('HTML'), "html.parser")
+                inner_html = BeautifulSoup(BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML'))
                 div.replace_with(inner_html)
                 print('Custom HTML inserted: ')
                 print('----------------------')
@@ -258,8 +263,12 @@ class Notion:
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
-        titles = [i for i in self.dom.find_all(
-            "div") if (i.has_attr("style") and "2.25em" in i["style"])]
+        if not self.is_mobile:
+            titles = [i for i in self.dom.find_all(
+                "div") if (i.has_attr("style") and "2.25em" in i["style"])]
+        else:
+            titles = [i for i in self.dom.find_all(
+                "div") if (i.has_attr("style") and "2em" in i["style"])]
         title = titles[0].text.strip()
         titles[0]["id"] = 'title'
         if self.is_index:
