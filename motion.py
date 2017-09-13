@@ -265,10 +265,10 @@ class Notion:
             self.dom.find('html')["manifest"] = ''
         if not self.is_mobile:
             titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and "2.25em" in i["style"])]
+                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2.25em" in i["style"])]
         else:
             titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and "2em" in i["style"])]
+                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2em" in i["style"])]
         title = titles[0].text.strip()
         titles[0]["id"] = 'title'
         if self.is_index:
