@@ -225,7 +225,7 @@ class Notion:
             # Attr
             if text.startswith('[attr'):
                 in_attr = True
-                attr = [a.split('=') for a in text.split(" ")[1:]]
+                attr = [a.split('=') for a in text[:-1].split(" ")[1:]]
                 div.decompose()
                 continue
             if text == '[/attr]':
