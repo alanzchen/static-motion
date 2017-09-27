@@ -181,6 +181,8 @@ class Notion:
     def div(self):
         in_comment = False
         in_html = False
+        in_attr = False
+        attr = None
         # Redo
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         for div in self.divs:
@@ -219,6 +221,20 @@ class Notion:
                 print(inner_html)
                 print('----------------------')
                 print(div)
+                continue
+            # Attr
+            if text.startswith('[attr'):
+                in_attr = True
+                attr = [a.split('=') for a in text.split(" ")[1:]]
+                div.decompose()
+                continue
+            if text == '[/attr]':
+                in_attr = False
+                div.decompose()
+                continue
+            if in_attr:
+                for a in attr:
+                    div[a[0]] = a[1]
                 continue
             # For lightGallery.js
             img = div.find('img')
