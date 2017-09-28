@@ -313,8 +313,7 @@ class Notion:
             "content"] = self.options["description"]
         self.dom.find("meta", attrs={"property": "og:description"})[
             "content"] = self.options["description"]
-        app_store = self.dom.find("meta", attrs={"name": "apple-itunes-app"})[
-            "content"]
+        app_store = self.dom.find("meta", attrs={"name": "apple-itunes-app"})
         if app_store:
             app_store.decompose()
         # Add Canonical URL for SEO
