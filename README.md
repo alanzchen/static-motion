@@ -33,7 +33,7 @@ All you need is a Github account.
    - `build_mobile`: Will build a mobile version of your entire site at /m/ if this option presents.
    - `apple_touch_icon`: the URL of your `apple-touch-icon.png` hosted externally.
    - `favicon`: the URL of your `favicon.ico` hosted externally.
-   - `anchor`: Enable anchor detection if this option presents. All urls starts with `https://www.notion.so` with `#` somewhere in the url will be rewritten to your relative path.
+   - `anchor`: Enable anchor detection if this option presents. All urls starting with `https://www.notion.so` with `#` somewhere in the url will be rewritten to your relative path.
 4. Bang! Wait a few minutes and your site will be up!
 5. Want to have Google Analytics and Disqus? See [customization](https://staticmotion.zenan.ch/customization).
 
