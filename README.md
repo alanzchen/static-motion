@@ -37,6 +37,16 @@ All you need is a Github account.
 4. Bang! Wait a few minutes and your site will be up!
 5. Want to have Google Analytics and Disqus? See [customization](https://staticmotion.zenan.ch/customization).
 
+## Updating Your Site
+
+You can set up [cron jobs](https://docs.travis-ci.com/user/cron-jobs/) in your Travis CI project. However, if you wish to update your site immediately, please manually rebuild your project in Travis CI.
+
+Committing directly to your Github repository to trigger Travis CI rebuild **is highly discouraged**.
+
+## Upgrading Your Static Motion
+
+Simply merge this repository with your repository.
+
 ## Debugging
 
 As [notion.so](https://notion.so) make changes to their template, this utility may break at any time.
@@ -44,8 +54,6 @@ As [notion.so](https://notion.so) make changes to their template, this utility m
 Before you go, make sure you have:
 
 - Python 3.6,
-
-
 - the latest Google Chrome,
 - a working `chromedriver` .
 
