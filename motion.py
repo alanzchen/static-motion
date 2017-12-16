@@ -134,7 +134,9 @@ class Notion:
             print(e)
             self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
             if no_retry:
-                print("Unhandled Error, exciting...")
+                print("Unhandled Error, aborting...")
+                print('--------------')
+                print(self.source)
                 raise
             else:
                 print("Exception occurred, sleep for 2 secs and retry...")
@@ -214,7 +216,7 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                inner_html = BeautifulSoup(BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML'))
+                inner_html = BeautifulSoup(BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML'), 'html.parser')
                 div.replace_with(inner_html)
                 print('Custom HTML inserted: ')
                 print('----------------------')
