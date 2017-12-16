@@ -118,7 +118,7 @@ class Notion:
         if 'atom' in self.options:
             download_file(self.options['atom'], 'feed', overwrite=True)
 
-    def mod(self, no_retry=False):
+    def mod(self, tries=0):
         try:
             self.save_assets()
             self.meta()
@@ -132,8 +132,7 @@ class Notion:
             self.gen_html()
         except Exception as e:
             print(e)
-            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
-            if no_retry:
+            if tries > 3:
                 print("Unhandled Error, aborting...")
                 print('--------------')
                 print(self.source)
@@ -141,6 +140,8 @@ class Notion:
             else:
                 print("Exception occurred, sleep for 2 secs and retry...")
                 time.sleep(2)
+                self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser") # Reset the DOM
+                self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
                 self.mod(no_retry=True)
 
     def save(self):
