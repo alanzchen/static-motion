@@ -142,7 +142,7 @@ class Notion:
                 time.sleep(2)
                 self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser") # Reset the DOM
                 self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
-                self.mod(no_retry=True)
+                self.mod(tries + 1)
 
     def save(self):
         if self.is_mobile:
