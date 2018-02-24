@@ -118,7 +118,7 @@ class Notion:
         if 'atom' in self.options:
             download_file(self.options['atom'], 'feed', overwrite=True)
 
-    def mod(self, no_retry=False):
+    def mod(self, tries=0):
         try:
             self.save_assets()
             self.meta()
@@ -132,14 +132,17 @@ class Notion:
             self.gen_html()
         except Exception as e:
             print(e)
-            self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
-            if no_retry:
-                print("Unhandled Error, exciting...")
+            if tries > 3:
+                print("Unhandled Error, aborting...")
+                print('--------------')
+                print(self.source)
                 raise
             else:
                 print("Exception occurred, sleep for 2 secs and retry...")
                 time.sleep(2)
-                self.mod(no_retry=True)
+                self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser") # Reset the DOM
+                self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
+                self.mod(tries + 1)
 
     def save(self):
         if self.is_mobile:
@@ -214,7 +217,7 @@ class Notion:
                 div.decompose()
                 continue
             if in_html:
-                inner_html = BeautifulSoup(BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML'))
+                inner_html = BeautifulSoup(BeautifulSoup(str(div).replace('</span>!(notion)!', '</span>'), "html.parser").find('div').text.strip('HTML'), 'html.parser')
                 div.replace_with(inner_html)
                 print('Custom HTML inserted: ')
                 print('----------------------')
@@ -313,6 +316,9 @@ class Notion:
             "content"] = self.options["description"]
         self.dom.find("meta", attrs={"property": "og:description"})[
             "content"] = self.options["description"]
+        app_store = self.dom.find("meta", attrs={"name": "apple-itunes-app"})
+        if app_store:
+            app_store.decompose()
         # Add Canonical URL for SEO
         if self.is_mobile:
             new_tag = self.dom.new_tag("link", rel='canonical',
