@@ -284,7 +284,7 @@ class Notion:
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
         titles = [i for i in self.dom.find_all(
-            "div") if (i.has_attr("style") and i["placeholder"] == 'Untitled')]
+            "div") if (i.has_attr("placeholder") and i["placeholder"] == 'Untitled')]
         title = titles[0].text.strip()
         titles[0]["id"] = 'title'
         if self.is_index:
