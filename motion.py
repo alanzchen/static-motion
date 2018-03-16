@@ -283,12 +283,8 @@ class Notion:
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
-        if not self.is_mobile:
-            titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2.25em" in i["style"])]
-        else:
-            titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2em" in i["style"])]
+        titles = [i for i in self.dom.find_all(
+            "div") if (i.has_attr("style") and i["placeholder"] == 'Untitled')]
         title = titles[0].text.strip()
         titles[0]["id"] = 'title'
         if self.is_index:
