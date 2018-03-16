@@ -138,8 +138,9 @@ class Notion:
                 print(self.source)
                 raise
             else:
-                print("Exception occurred, sleep for 2 secs and retry...")
-                time.sleep(2)
+                sec = tries * 5
+                print("Exception occurred, sleep for,", sec, "secs and retry...")
+                time.sleep(sec)
                 self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser") # Reset the DOM
                 self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
                 self.mod(tries + 1)
