@@ -112,6 +112,7 @@ class Notion:
 
     def wait_spinner(self):
         i = 0
+        self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
         while (self.dom.find(class_="loading-spinner")):
             i += 1
             print("Waiting for spinner... " + str(i))
