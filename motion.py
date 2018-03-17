@@ -90,11 +90,10 @@ class Notion:
         $('[data-block-id]:has([placeholder=Toggle]) .notion-button').click();
         """
         driver.execute_script(init_jquery)
-        self.dom = BeautifulSoup(driver.page_source, "html.parser")
-        self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
         self.wait_spinner()
         if 'placeholder="Toggle"' in driver.page_source:
             driver.execute_script(expand_toggle)
+            print('Expanding toggle...')
             self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
