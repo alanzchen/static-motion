@@ -88,6 +88,7 @@ class Notion:
         """
         expand_toggle = """
         $('[data-block-id]:has([placeholder=Toggle]) .notion-button').click();
+        $('[data-block-id]:has([placeholder=Toggle]) .notion-button').attr('mark', 'expanded');
         """
         driver.execute_script(init_jquery)
         self.wait_spinner()
