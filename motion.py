@@ -81,21 +81,9 @@ class Notion:
         else:
             self.driver.get("https://notion.so" + url)
         time.sleep(wait)
-        init_jquery = """
-        var jq = document.createElement('script');
-        jq.src = "https://code.jquery.com/jquery-latest.min.js";
-        document.getElementsByTagName('head')[0].appendChild(jq);
-        """
-        expand_toggle = """
-        $('[data-block-id]:has([placeholder=Toggle]) .notion-button').attr('mark', 'toggle');
-        $('[mark=toggle]').click();
-        """
-        driver.execute_script(init_jquery)
+        self.dom = BeautifulSoup(driver.page_source, "html.parser")
+        self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
         self.wait_spinner()
-        if 'placeholder="Toggle"' in driver.page_source:
-            driver.execute_script(expand_toggle)
-            print('Expanding toggle...')
-            self.wait_spinner()
         self.divs = [d for d in self.dom.find_all("div") if d.has_attr("data-block-id")]
         self.links = set()
         if not options:
@@ -142,7 +130,6 @@ class Notion:
             self.iframe()
             self.div()
             self.disqus()
-            self.add_toggle_script()
             self.gen_html()
         except Exception as e:
             print(e)
@@ -398,35 +385,6 @@ class Notion:
                 page.mod()
                 visited.add(link)
                 page.walk()
-
-    def add_toggle_script(self):
-        script = self.dom.new_tag("script")
-        script.string = """
-        jQuery('[data-block-id]:has([placeholder=Toggle]) .notion-button').on('click', function(e) {
-           jQuery(e.target).closest('[data-block-id]').find('.content-block').toggle();
-           if (jQuery(e.target).closest('[data-block-id]').find('.content-block').is(':visible')) {
-             rotateString = 'rotateZ(180deg)'
-           } else {
-             rotateString = 'rotateZ(90deg)'
-           }
-           jQuery(e.target).closest('[data-block-id]').find('svg:first').css({
-               'transform': rotateString
-           });
-        })
-        jQuery('[data-block-id]:has([placeholder=Toggle]) .notion-button').each(function(e) {
-           jQuery(this).closest('[data-block-id]').find('.content-block').toggle();
-           if (jQuery(this).closest('[data-block-id]').find('.content-block').is(':visible')) {
-             rotateString = 'rotateZ(180deg)'
-           } else {
-             rotateString = 'rotateZ(90deg)'
-           }
-           jQuery(this).closest('[data-block-id]').find('svg').css({
-               'transform': rotateString
-           });
-        })
-        """
-        self.dom.find('body').append(script)
-
 
 
 if __name__ == "__main__":
