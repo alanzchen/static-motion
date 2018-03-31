@@ -101,6 +101,7 @@ class Notion:
 
     def wait_spinner(self):
         i = 0
+        self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser")
         while (self.dom.find(class_="loading-spinner")):
             i += 1
             print("Waiting for spinner... " + str(i))
@@ -138,8 +139,9 @@ class Notion:
                 print(self.source)
                 raise
             else:
-                print("Exception occurred, sleep for 2 secs and retry...")
-                time.sleep(2)
+                sec = tries * 5
+                print("Exception occurred, sleep for,", sec, "secs and retry...")
+                time.sleep(sec)
                 self.dom = BeautifulSoup(self.driver.page_source.replace('</span>', '</span>!(notion)!'), "html.parser") # Reset the DOM
                 self.source = self.driver.page_source.replace('</span>', '</span>!(notion)!')
                 self.mod(tries + 1)
@@ -282,12 +284,8 @@ class Notion:
     def meta(self):
         if self.dom.find('html').has_attr("manifest"):
             self.dom.find('html')["manifest"] = ''
-        if not self.is_mobile:
-            titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2.25em" in i["style"])]
-        else:
-            titles = [i for i in self.dom.find_all(
-                "div") if (i.has_attr("style") and i.has_attr('data-block-id') and "2em" in i["style"])]
+        titles = [i for i in self.dom.find_all(
+            "div") if (i.has_attr("placeholder") and i["placeholder"] == 'Untitled')]
         title = titles[0].text.strip()
         titles[0]["id"] = 'title'
         if self.is_index:
@@ -387,7 +385,6 @@ class Notion:
                 page.mod()
                 visited.add(link)
                 page.walk()
-
 
 
 if __name__ == "__main__":
