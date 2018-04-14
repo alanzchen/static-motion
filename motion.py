@@ -258,7 +258,7 @@ class Notion:
         for a in self.dom.find_all("a"):
             href = a['href']
             if href.startswith('/'):
-                if href == '/login':
+                if href == '/login' or 'file/' in href:
                     a.decompose()
                     continue
                 elif href[1:] == self.options["index"].split("/")[-1]:
