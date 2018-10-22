@@ -1,4 +1,4 @@
-# 🚀 Static Motion
+# 🚀 Static Motion [DISCONTINUED]
 
 Make your static site from [Notion.so](https://notion.so) with the help of Netlify and Travis CI.
 
