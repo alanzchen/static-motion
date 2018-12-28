@@ -13,7 +13,7 @@ install:
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
   - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-  - npm install -g netlify-cli
+  - npm install -g netlify-cli@1.2.3
   - pip install -r requirements.txt
   - nohup sudo Xvfb :10 -ac &
   - export DISPLAY=:10
